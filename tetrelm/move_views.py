@@ -18,10 +18,13 @@ def create(req, game_id):
     move = game.move_set.create(
         selected_piece=move_data['selected_piece'],
         board=move_data['board'],
-        x_position=move_data['x_position']
     )
-    data = serializers.serialize("json", [move, ])
-    return HttpResponse(data)
+    move.generate_x_position()
+    move.save()
+    data = {
+        "x_position": move.x_position
+    }
+    return HttpResponse(json.dumps(data))
 
 def show(req, game_id, move_id):
     game = Game.objects.get(pk=game_id)
